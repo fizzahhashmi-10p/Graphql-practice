@@ -1,15 +1,14 @@
-const authors = [
-  { id: '1', name: 'J.K. Rowling', books: null },
-  { id: '2', name: 'J.R.R. Tolkien', books: null },
+import { Author, Book } from './type.js';
+
+const authors: Author[] = [
+  { id: '1', name: 'J.K. Rowling', book_ids: ['1'] },
+  { id: '2', name: 'J.R.R. Tolkien', book_ids: ['2','3'] },
 ];
 
-const books = [
-  { id: '1', title: 'Harry Potter and the Philosopher\'s Stone', author: authors[0] },
-  { id: '2', title: 'Harry Potter and the Chamber of Secrets', author: authors[0] },
-  { id: '3', title: 'The Hobbit', author: authors[1] },
+const books: Book[] = [
+  { id: '1', title: 'Harry Potter and the Philosopher\'s Stone', author_id: '1' },
+  { id: '2', title: 'Harry Potter and the Chamber of Secrets', author_id: '2' },
+  { id: '3', title: 'The Hobbit', author_id: '2' },
 ];
-
-authors[0].books = [books[0], books[1]];
-authors[1].books = [books[2]];
 
 export { authors, books }
