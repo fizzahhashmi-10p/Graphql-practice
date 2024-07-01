@@ -11,4 +11,4 @@ const books: Book[] = [
   { id: '3', title: 'The Hobbit', author_id: '2' },
 ];
 
-export { authors, books }
+export default { authors, books }
