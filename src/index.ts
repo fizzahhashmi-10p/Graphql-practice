@@ -3,36 +3,34 @@ import { startStandaloneServer } from '@apollo/server/standalone';
 import { v4 as uuidv4 } from 'uuid';
 
 import { typeDefs } from './schema.js';
-import data  from './data.js'
+import data  from './data.js';
 import { Author, Book } from './type.js';
+import { bookService } from './service/bookService.js';
+import { authorService } from './service/authorService.js';
 
 const resolvers = {
   Query: {
-    authors: (): Author[] => data.authors,
-    books: (): Book[] => data.books,
-    author: (_ ,args): Author => data.authors.find(author => author.id === args.id),
-    book: (_ ,args): Book => data.books.find(book => book.id === args.id)
+    authors: (): Author[] => authorService.getAuthors(),
+    books: () => bookService.getBooks(),
+    author: (_ ,args): Author => authorService.getAuthor(args.id),
+    book: (_ ,args): Book => bookService.getBook(args.id)
   },
   Book: {
       // variable book is actually parent object
-      author: (book: Book): Author => data.authors.find(author => author.id === book.author_id)
+      author: (book: Book): Author => authorService.findAuthorByBook(book)
   },
   Author: {
-      books: (author: Author): Book[] => data.books.filter(book => author.book_ids.includes(book.id))
+      books: (author: Author): Book[] => bookService.findBooksByAuthor(author)
   },
   Mutation: {
       deleteBook: (_, args): Book[] => {
-          data.books = data.books.filter(book => book.id !== args.id)
-          return data.books
+            return bookService.deleteBook(args.id)
       },
       addBook: (_, args): Book => {
-            let author = data.authors.find(author => author.id === args.book.author_id)
-            if(! author){
-                throw new Error(`Author with id ${args.book.author_id} does not exist`)
+            if(authorService.isValidAuthor(args.book.author_id){
+                return bookService.addBook(args.book)
             }
-            let newGame = {...args.book, id: uuidv4()}
-            data.books.push(newGame)
-            return newGame
+            return null
       }
   }
 };
