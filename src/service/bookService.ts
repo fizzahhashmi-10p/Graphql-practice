@@ -1,6 +1,6 @@
 import data  from '../data.js';
 import { Author, Book } from '../type.js';
-
+import { v4 as uuidv4 } from 'uuid';
 
 class BookService{
     getBooks() : Book[] {
@@ -20,10 +20,10 @@ class BookService{
         return data.books
     }
 
-    addBook(bookDetails): Book[]{
+    addBook(bookDetails): Book{
         let newGame = {...bookDetails, id: uuidv4()}
-        return data.books.push(newGame)
-
+        data.books.push(newGame)
+        return newGame
     }
 }
 
