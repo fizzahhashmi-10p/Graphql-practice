@@ -24,7 +24,7 @@ export const typeDefs = `#graphql
   }
 
   input AddBookInput {
-      title: String!
-      author_id: ID!
+      title: String
+      author_id: ID
   }
 `;

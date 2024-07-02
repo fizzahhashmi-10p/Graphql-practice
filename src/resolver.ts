@@ -2,30 +2,61 @@ import data  from './data.js';
 import { Author, Book } from './type.js';
 import { bookService } from './service/bookService.js';
 import { authorService } from './service/authorService.js';
+import { NotFoundError, ValidationError } from './errors.js';
 
 export const resolvers = {
   Query: {
-    authors: (): Author[] => authorService.getAuthors(),
-    books: () => bookService.getBooks(),
-    author: (_ ,args): Author => authorService.getAuthor(args.id),
-    book: (_ ,args): Book => bookService.getBook(args.id)
+    authors: async(): Promise<Author[]> => {
+        const authors = await authorService.getAuthors()
+        if(!authors){
+            throw new NotFoundError(`Failed to fetch Authors!`)
+        }
+        return authors
+        },
+    books: async(): Promise<Book[]> => {
+       const books = await bookService.getBooks()
+       if(!books){
+           throw new NotFoundError(`Failed to fetch Books!`)
+       }
+       return books
+    },
+    author: async(_ ,args): Promise<Author> => {
+       const author = await authorService.getAuthor(args.id)
+       if(!author){
+           throw new NotFoundError(`Author with id: ${args.id} does not exist!`)
+       }
+       return author
+    },
+    book: async(_ ,args): Promise<Book> => {
+        const book = await bookService.getBook(args.id)
+        if(!book){
+            throw new NotFoundError(`Book with id: ${args.id} does not exist!`)
+        }
+        return book
+    },
   },
   Book: {
       // variable book is actually parent object
-      author: (book: Book): Author => authorService.findAuthorByBook(book)
+      author: async (book: Book): Promise<Author> => await authorService.findAuthorByBook(book)
   },
   Author: {
-      books: (author: Author): Book[] => bookService.findBooksByAuthor(author)
+      books: async (author: Author): Promise<Book[]> => await bookService.findBooksByAuthor(author)
   },
   Mutation: {
       deleteBook: (_, args): Book[] => {
+            if (!bookService.getBook(args.id)){
+                throw new NotFoundError(`Book with id: ${args.id} does not exist`)
+            }
             return bookService.deleteBook(args.id)
       },
       addBook: (_, args): Book => {
-            if(authorService.isValidAuthor(args.book.author_id)){
-                return bookService.addBook(args.book)
+            if(!args.book.title || !args.book.author_id){
+                throw new ValidationError(`Missing value for a required field (title, author id).`)
             }
-            return null
+            if(!authorService.isValidAuthor(args.book.author_id)){
+                throw new ValidationError(`Invalid Author id: ${args.book.author_id} provided!`)
+            }
+            return bookService.addBook(args.book)
       }
   }
 };

@@ -18,7 +18,6 @@ class AuthorService{
     isValidAuthor(id: string) : boolean{
         let author = data.authors.find(author => author.id === id)
         if(! author){
-            throw new Error(`Author with id ${id} does not exist`)
             return false
         }
         return true
