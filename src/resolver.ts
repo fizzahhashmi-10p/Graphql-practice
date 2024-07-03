@@ -1,7 +1,8 @@
 import data  from './data.js';
-import { Author, Book } from './type.js';
+import { Author, Book, Token } from './type.js';
 import { bookService } from './service/bookService.js';
 import { authorService } from './service/authorService.js';
+import { authenticationService } from './service/authenticationService.js';
 import { NotFoundError, ValidationError } from './errors.js';
 
 export const resolvers = {
@@ -20,7 +21,8 @@ export const resolvers = {
        }
        return books
     },
-    author: async(_ ,args): Promise<Author> => {
+    author: async(_ ,args, context): Promise<Author> => {
+       if (!context.authorId) throw new NotFoundError(`Access Denied`);
        const author = await authorService.getAuthor(args.id)
        if(!author){
            throw new NotFoundError(`Author with id: ${args.id} does not exist!`)
@@ -57,6 +59,16 @@ export const resolvers = {
                 throw new ValidationError(`Invalid Author id: ${args.book.author_id} provided!`)
             }
             return bookService.addBook(args.book)
-      }
+      },
+      login: (_, args): Token => {
+            const { username, password } = args.login;
+            // Replace `verifyUser` with the actual user verification logic
+            const author = authorService.findAuthorByCredentials(username, password);
+            if(!author){
+                throw new ValidationError(`Invalid credentials provided!`);
+            }
+            return { jwt: authenticationService.generateToken(author) };
+      },
+
   }
 };

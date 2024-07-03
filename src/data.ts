@@ -1,8 +1,8 @@
 import { Author, Book } from './type.js';
 
 const authors: Author[] = [
-  { id: '1', name: 'J.K. Rowling', book_ids: ['1'] },
-  { id: '2', name: 'J.R.R. Tolkien', book_ids: ['2','3'] },
+  { id: '1', name: 'J.K. Rowling', book_ids: ['1'], username: 'jk', password: 'password'},
+  { id: '2', name: 'J.R.R. Tolkien', book_ids: ['2','3'], username: 'jrr', password: 'pass' },
 ];
 
 const books: Book[] = [

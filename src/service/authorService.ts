@@ -22,6 +22,10 @@ class AuthorService{
         }
         return true
     }
+
+    findAuthorByCredentials(username, password): Author{
+        return data.authors.find(author => (author.username === username && author.password === password))
+    }
 }
 
 export const authorService = new AuthorService();
