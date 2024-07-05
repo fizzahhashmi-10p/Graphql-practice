@@ -1,25 +1,23 @@
 import jwt from 'jsonwebtoken';
+import { Role } from '../type.js'
 
 const secretKey = 'mySecretKey';
 
 
 interface DecodedToken {
-  id: string;
+  role: Role;
 }
 
 class AuthenticationService{
     generateToken(user): string {
-      const token = jwt.sign({ id: user.id }, secretKey, { expiresIn: '1h' });
+      const token = jwt.sign({ role: user.role }, secretKey, { expiresIn: '1h' });
       return token;
     }
 
-    verifyToken(token: string): DecodedToken {
-      try {
+    verifyToken(authHeader: string): DecodedToken {
+        const token = authHeader.split(' ')[1];
         const decoded = jwt.verify(token, secretKey) as DecodedToken;
         return decoded;
-      } catch (err) {
-        throw new Error('Invalid token');
-      }
     }
 }
 

@@ -1,5 +1,5 @@
 import data  from './data.js';
-import { Author, Book, Token } from './type.js';
+import { Role, Author, Book, Token } from './type.js';
 import { bookService } from './service/bookService.js';
 import { authorService } from './service/authorService.js';
 import { authenticationService } from './service/authenticationService.js';
@@ -22,7 +22,7 @@ export const resolvers = {
        return books
     },
     author: async(_ ,args, context): Promise<Author> => {
-       if (!context.authorId) throw new NotFoundError(`Access Denied`);
+       if (context.role && context.role === Role.WRITER) throw new NotFoundError(`Access Denied`);
        const author = await authorService.getAuthor(args.id)
        if(!author){
            throw new NotFoundError(`Author with id: ${args.id} does not exist!`)

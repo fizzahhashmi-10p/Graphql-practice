@@ -1,8 +1,8 @@
-import { Author, Book } from './type.js';
+import { Role, Author, Book } from './type.js';
 
 const authors: Author[] = [
-  { id: '1', name: 'J.K. Rowling', book_ids: ['1'], username: 'jk', password: 'password'},
-  { id: '2', name: 'J.R.R. Tolkien', book_ids: ['2','3'], username: 'jrr', password: 'pass' },
+  { id: '1', name: 'J.K. Rowling', book_ids: ['1'], username: 'jk', password: 'password', role: Role.ADMIN},
+  { id: '2', name: 'J.R.R. Tolkien', book_ids: ['2','3'], username: 'jrr', password: 'pass', role: Role.WRITER},
 ];
 
 const books: Book[] = [
